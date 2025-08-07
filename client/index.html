@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(5, 50px);
+        grid-template-rows: repeat(5, 50px);
+        gap: 5px;
+      }
+      .cube {
+        width: 50px;
+        height: 50px;
+        background-color: lightblue;
+        border: 2px solid #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: 80px 80px 80px; /* three columns */
+        grid-template-rows: 50px 50px 50px; /* three rows */
+        gap: 5px;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .controls button {
+        padding: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        border: 2px solid #333;
+        background-color: lightblue;
+      }
+
+      /* Place each button in its "compass" position */
+      .north {
+        grid-column: 2;
+        grid-row: 1;
+      }
+      .south {
+        grid-column: 2;
+        grid-row: 3;
+      }
+      .west {
+        grid-column: 1;
+        grid-row: 2;
+      }
+      .east {
+        grid-column: 3;
+        grid-row: 2;
+      }
+      .active {
+        background-color: orange; /* highlight current position */
+      }
+    </style>
+  </head>
+  <body>
+    <button id="controller-button">connect wallet</button>
+
+    <h2 id="position-display">Position: (0, 0): Treasure</h2>
+    <p id="treasure-display">Treasures left: 0</p>
+    <p id="energy-display">energy: 0</p>
+    <p id="score-display">score: 0</p>
+
+    <div class="grid" id="game-grid">
+      <!-- Create cubes dynamically -->
+    </div>
+
+    <br />
+    <br />
+    <br />
+
+    <button id="spawn-button" disabled>spawn</button>
+    <div class="controls">
+      <button id="north" class="north" disabled>North</button>
+      <button id="south" class="south" disabled>south</button>
+      <button id="east" class="east" disabled>east</button>
+      <button id="west" class="west" disabled>west</button>
+    </div>
+
+    <script type="module">
+      import init, { ToriiClient } from './pkg/dojo_c.js';
+      import { initGame, updateFromEntityData } from './game.js';
+      import controllerOpts from './controller.js';
+      import Controller from '@cartridge/controller';
+      import manifest from '../manifest_dev.json' assert { type: 'json' };
+
+      await init();
+
+      async function run(account) {
+        let config = {
+          toriiUrl: 'http://localhost:8080',
+          relayUrl: '',
+          worldAddress: manifest.world.address,
+        };
+
+        const torii = await new ToriiClient(config);
+        initGame(account, manifest);
+
+        const query = {
+          pagination: {
+            limit: 10,
+            cursor: undefined,
+            direction: 'Forward',
+            order_by: [],
+          },
+          clause: undefined,
+          no_hashed_keys: false,
+          models: [],
+          historical: false,
+        };
+
+        let entities = await torii.getEntities(query);
+        console.log(entities);
+
+        if (entities.items.length > 0) {
+          entities.items.forEach((entity) => {
+            updateFromEntityData(entity);
+          });
+        }
+
+        const subscription = await torii.onEntityUpdated(
+          {
+            Keys: {
+              keys: [undefined],
+              pattern_matching: 'VariableLen',
+              models: [],
+            },
+          },
+          (entities) => {
+            console.log(entities);
+            updateFromEntityData(entities);
+          },
+        );
+
+        // keeping the subscription alive
+        window.addEventListener('beforeUnload', () => {
+          if (subscription) {
+            subscription.cancel();
+          }
+        });
+      }
+
+      const controller = new Controller(controllerOpts);
+      document.getElementById('controller-button').onclick = async () => {
+        try {
+          let account = await controller.connect();
+          document.getElementById('controller-button').textContent = 'connected';
+          document.getElementById('controller-button').style.backgroundColor = '#4CAF50';
+
+          document.getElementById('spawn-button').disabled = false;
+
+          run(account).catch((error) => {
+            console.error(error);
+          });
+        } catch (error) {
+          console.error('Failed to connect: ', error);
+          document.getElementById('controller-button').textContent = 'connection failed';
+          document.getElementById('controller-button').style.backgroundColor = '#f44336';
+        }
+      };
+      // Generate the 5x5 grid
+      const grid = document.getElementById('game-grid');
+      for (let y = 0; y < 5; y++) {
+        for (let x = 0; x < 5; x++) {
+          const cube = document.createElement('div');
+          cube.className = 'cube';
+          cube.dataset.x = x;
+          cube.dataset.y = y;
+          cube.textContent = `${x},${y}`;
+          grid.appendChild(cube);
+        }
+      }
+
+      // Updated version of your function
+
+      // Test: highlight position (2, 3)
+      // updatePositionDisplay(0, 0);
+    </script>
+  </body>
+</html>
