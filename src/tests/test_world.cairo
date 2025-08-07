@@ -14,8 +14,8 @@ mod tests {
         let ndef = NamespaceDef {
             namespace: "dojo_starter",
             resources: [
-                TestResource::Model(m_Position::TEST_CLASS_HASH),
-                TestResource::Model(m_Moves::TEST_CLASS_HASH),
+                TestResource::Model(m_Player::TEST_CLASS_HASH),
+                TestResource::Model(m_MapCell::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_Moved::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
             ]

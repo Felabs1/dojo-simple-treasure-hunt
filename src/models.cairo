@@ -48,12 +48,14 @@ pub struct GameState {
 pub impl PlayerImpl of PlayerTrait {
     fn apply_direction(ref self: Player, direction: Direction) {
         match direction {
-            Direction::North => {self.y = self.y.saturating_add(1)},
-            Direction::South => {self.y = self.y.saturating_sub(1)},
+            Direction::North => {self.y = self.y.saturating_sub(1)},
+            Direction::South => {self.y = self.y.saturating_add(1)},
             Direction::East => {self.x = self.x.saturating_add(1)},
             Direction::West => {self.x = self.x.saturating_sub(1)}
         }
     }
+
+    // fn ()
 }
 
 // #[generate_trait]

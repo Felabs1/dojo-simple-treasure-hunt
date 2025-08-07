@@ -42,7 +42,7 @@ pub mod actions {
                     let cell_type = if (x_grid == 1 && y_grid == 3) || (x_grid == 4 && y_grid == 2) {
                     treasures += 1;
                     1 // treasures
-                    } else if (x_grid == 2 && y_grid == 2) && (x_grid == 3 && y_grid == 4) {
+                    } else if (x_grid == 2 && y_grid == 2) || (x_grid == 3 && y_grid == 4) {
                         2 // trap
                     } else {
                         0 // empty
@@ -77,20 +77,23 @@ pub mod actions {
             let mut game_state: GameState = world.read_model(player_id);
 
             // if the player hit a treasure, he scores something and treasures remaining are deducted from the game
-            if map_cell.cell_type == '1'{
+            if map_cell.cell_type == 1{
                 player.score = player.score.saturating_add(10);
                 game_state.treasures_left = game_state.treasures_left.saturating_sub(1);
 
                 // if the player hit a trap, the energy is deducted
-            } else if map_cell.cell_type == '2' {
+            } else if map_cell.cell_type == 2 {
                 player.energy = player.energy.saturating_sub(1);
             } else {
                 // do nothing
             }
 
 
-            world.write_model(@player);
-            world.write_model(@game_state);
+            if (player.x < 5 && player.y < 5) {
+                world.write_model(@player);
+                world.write_model(@game_state);
+            }
+            
         }
     }
 
