@@ -13,11 +13,15 @@ pub enum Direction {
     West
 }
 
+
+
 #[derive(Copy, Drop, Serde)]
 #[dojo::model]
 pub struct Player {
+    
     #[key]
     pub playerId: ContractAddress,  // unique id for player
+    pub gameId: u32,
     pub x: u32,
     pub y: u32,
     pub energy: u32,
@@ -28,6 +32,8 @@ pub struct Player {
 #[derive(Copy, Drop, Serde)]
 #[dojo::model]
 pub struct MapCell {
+    #[key]
+    pub gameId: u32,
     #[key]
     pub x: u32,
     #[key]
@@ -40,7 +46,7 @@ pub struct MapCell {
 #[dojo::model]
 pub struct GameState {
     #[key]
-    pub playerId: ContractAddress,
+    pub gameId: u32, // shared across all players in a match
     pub treasures_left: u32,
 }
 
@@ -55,10 +61,6 @@ pub impl PlayerImpl of PlayerTrait {
         }
     }
 
-    // fn ()
+    
 }
 
-// #[generate_trait]
-// pub impl MapCellImpl of MapCellTrait {
-//     fn initialize_new_cell
-// }
