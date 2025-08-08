@@ -1328,8 +1328,8 @@
   },
   "contracts": [
     {
-      "address": "0x55cf460b67e54f42926aefb43ccda3675a86b9adc1c5451608d6e79907930ec",
-      "class_hash": "0x34accb3c4937f608933403eeb50e7df9b6ba82e488cc6c42b703bcc66a9f3db",
+      "address": "0x7003ceccf61d253b7a2ebe56dcc98a92259378dad22ed4c34cdb26e14fba7ab",
+      "class_hash": "0x5ab567d2bce13c641e8d607189ed63b8a20f214bfde037ee9697a0aafc93f70",
       "abi": [
         {
           "type": "impl",
@@ -1415,7 +1415,12 @@
             {
               "type": "function",
               "name": "spawn",
-              "inputs": [],
+              "inputs": [
+                {
+                  "name": "game_id",
+                  "type": "core::integer::u32"
+                }
+              ],
               "outputs": [],
               "state_mutability": "external"
             },
@@ -1562,19 +1567,19 @@
   "models": [
     {
       "members": [],
-      "class_hash": "0x3d10795d7312f86d0a8f921b843aeadab8665c80c8140f9a1202cc423db90b5",
+      "class_hash": "0x3cc5191da6cf3d90587cbc1f2d54bf9822eb955cd2e7e9ce312e3ef5015afaf",
       "tag": "di-GameState",
       "selector": "0x520c18d6619456798fbcb4ba5476d0480a79a9c6ae1948f8a119bf0b4c10ac7"
     },
     {
       "members": [],
-      "class_hash": "0x24fe2bd9f5b03c6a5f5b6a49bc7fdbf202f74e09893470fe2ad42d3ec3acf2e",
+      "class_hash": "0x7ef5b2144212f96acc30f54026afb6a3e19639abbffed97f622b7b7b797fa52",
       "tag": "di-MapCell",
       "selector": "0x748a7ab6079361eed3901dc323bf60e652a467070ccf494e80ff76d8d803893"
     },
     {
       "members": [],
-      "class_hash": "0x2ed6b9e78e4a375194ac6e9857c741ee4d39867075bb0788948220232fae27a",
+      "class_hash": "0x2860f9be5bb86505c2d94caa906556527ee935572311350647d5605c12155e5",
       "tag": "di-Player",
       "selector": "0x2fb9118e18cda668bbe1da4ba11cfded274f787d6a3a1662dff9fd307e6000f"
     }

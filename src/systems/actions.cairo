@@ -25,10 +25,9 @@ pub mod actions {
             let player_id = starknet::get_caller_address();
             
             // we wanna check if game allready exist
-            let existing_state: Option<GameState> = world.try_read_model(game_id);
+            let existing_state: GameState = world.read_model(game_id);
 
-            if existing_state.is_none() {
-                // first player create map and state
+            if existing_state.gameId != game_id {
                 let mut treasures = 0;
                 let mut x_grid = 0;
 
@@ -53,8 +52,15 @@ pub mod actions {
                     
                 };
 
-                let game_state = GameState {gameId: game_id, treasures_left: treasures}world.write_model(@game_state);
+                let game_state = GameState {gameId: game_id, treasures_left: treasures};
+                world.write_model(@game_state);
+
             }
+
+           
+                // first player create map and state
+                
+            
 
             // add player
 
@@ -112,5 +118,9 @@ pub mod actions {
         fn world_default(self: @ContractState) -> dojo::world::WorldStorage {
             self.world(@"di")
         }
+
+        // fn try_read_model(self: @ContractState, game_id: u32) -> dojo::world::WorldStorage {
+        //     std::panic
+        // }
     }
 }
